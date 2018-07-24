@@ -2,6 +2,8 @@
 using System.Text;
 using System.Net;
 using System.IO;
+using System;
+using System.Threading;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 
@@ -160,17 +162,55 @@ namespace CheckFSSPRUS.Helpers.HelperWebRequest
         /// <returns></returns>
         public FsspResponseLegal WebRequestLegal(string _token, string _region, string _name)
         {
-            WebRequest _webRequest = (HttpWebRequest)WebRequest.Create("https://api-ip.fssprus.ru/api/v1.0/search/legal?token=" + _token + "&region=" + _region + "&name=" + _name);
-            _webRequest.ContentType = "application/json";
-            _webRequest.Method = "GET";
+            WebResponse _webResponse = null;
+            do
+            {
+                WebRequest _webRequest = null;
+                try
+                {
+                    _webRequest = (HttpWebRequest)WebRequest.Create("https://api-ip.fssprus.ru/api/v1.0/search/legal?token=" + _token + "&region=" + _region + "&name=" + _name);
+                    _webRequest.ContentType = "application/json";
+                    WebProxy _webProxy = new WebProxy();
+                    Uri newUri = new Uri("http://you_proxy:3128");
+                    _webProxy.Address = newUri;
+                    _webProxy.Credentials = CredentialCache.DefaultCredentials;
+                    _webRequest.Proxy = _webProxy;
+                    _webRequest.Method = "GET";
+                    _webResponse = _webRequest.GetResponse();
+                }
+                catch(WebException e)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(e.Message);
+                    Console.ResetColor();
+                    _webRequest.Abort();
+                    Thread.Sleep(1000);
+                }
+            }
+            while (_webResponse is null);
 
-            WebResponse _webResponse = _webRequest.GetResponse();
             Stream streamResponse = _webResponse.GetResponseStream();
             StreamReader streamReader = new StreamReader(streamResponse);
             string Response = streamReader.ReadToEnd();
             
             DataContractJsonSerializer _dataContractJsonSerializer = new DataContractJsonSerializer(typeof(FsspResponseLegal));
-            FsspResponseLegal _result = (FsspResponseLegal)_dataContractJsonSerializer.ReadObject(new MemoryStream(Encoding.Unicode.GetBytes(Response)));
+
+            FsspResponseLegal _result = null;
+            do
+            {
+                try
+                {
+                    _result = (FsspResponseLegal)_dataContractJsonSerializer.ReadObject(new MemoryStream(Encoding.Unicode.GetBytes(Response)));
+                }
+                catch(Exception e)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(e.Message);
+                    Console.ResetColor();
+                    Thread.Sleep(1000);
+                }
+            }
+            while (_result is null);
 
             return _result;
         }
@@ -183,17 +223,55 @@ namespace CheckFSSPRUS.Helpers.HelperWebRequest
         /// <returns></returns>
         public FsspResponseStatus WebRequestStatus(string _token, string _task)
         {
-            WebRequest _webRequest = (HttpWebRequest)WebRequest.Create("https://api-ip.fssprus.ru/api/v1.0/status?token=" + _token + "&task=" + _task);
-            _webRequest.ContentType = "application/json";
-            _webRequest.Method = "GET";
+            WebResponse _webResponse = null;
+            do
+            {
+                WebRequest _webRequest = null;
+                try
+                {
+                    _webRequest = (HttpWebRequest)WebRequest.Create("https://api-ip.fssprus.ru/api/v1.0/status?token=" + _token + "&task=" + _task);
+                    _webRequest.ContentType = "application/json";
+                    WebProxy _webProxy = new WebProxy();
+                    Uri newUri = new Uri("http://you_proxy:3128");
+                    _webProxy.Address = newUri;
+                    _webProxy.Credentials = CredentialCache.DefaultCredentials;
+                    _webRequest.Proxy = _webProxy;
+                    _webRequest.Method = "GET";
+                    _webResponse = _webRequest.GetResponse();
+                }
+                catch (WebException e)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(e.Message);
+                    Console.ResetColor();
+                    _webRequest.Abort();
+                    Thread.Sleep(1000);
+                }
+            }
+            while (_webResponse is null);
 
-            WebResponse _webResponse = _webRequest.GetResponse();
             Stream streamResponse = _webResponse.GetResponseStream();
             StreamReader streamReader = new StreamReader(streamResponse);
             string Response = streamReader.ReadToEnd();
 
             DataContractJsonSerializer _dataContractJsonSerializer = new DataContractJsonSerializer(typeof(FsspResponseStatus));
-            FsspResponseStatus _result = (FsspResponseStatus)_dataContractJsonSerializer.ReadObject(new MemoryStream(Encoding.Unicode.GetBytes(Response)));
+
+            FsspResponseStatus _result = null;
+            do
+            {
+                try
+                {
+                    _result = (FsspResponseStatus)_dataContractJsonSerializer.ReadObject(new MemoryStream(Encoding.Unicode.GetBytes(Response)));
+                }
+                catch (Exception e)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(e.Message);
+                    Console.ResetColor();
+                    Thread.Sleep(1000);
+                }
+            }
+            while (_result is null);
 
             return _result;
         }
@@ -206,17 +284,55 @@ namespace CheckFSSPRUS.Helpers.HelperWebRequest
         /// <returns></returns>
         public FsspResponseResult WebRequestResult(string _token, string _task)
         {
-            WebRequest _webRequest = (HttpWebRequest)WebRequest.Create("https://api-ip.fssprus.ru/api/v1.0/result?token=" + _token + "&task=" + _task);
-            _webRequest.ContentType = "application/json";
-            _webRequest.Method = "GET";
+            WebResponse _webResponse = null;
+            do
+            {
+                WebRequest _webRequest = null;
+                try
+                {
+                    _webRequest = (HttpWebRequest)WebRequest.Create("https://api-ip.fssprus.ru/api/v1.0/result?token=" + _token + "&task=" + _task);
+                    _webRequest.ContentType = "application/json";
+                    WebProxy _webProxy = new WebProxy();
+                    Uri newUri = new Uri("http://you_proxy:3128");
+                    _webProxy.Address = newUri;
+                    _webProxy.Credentials = CredentialCache.DefaultCredentials;
+                    _webRequest.Proxy = _webProxy;
+                    _webRequest.Method = "GET";
 
-            WebResponse _webResponse = _webRequest.GetResponse();
+                    _webResponse = _webRequest.GetResponse();
+                }
+                catch (WebException e)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(e.Message);
+                    Console.ResetColor();
+                    _webRequest.Abort();
+                    Thread.Sleep(1000);
+                }
+            }
+            while (_webResponse is null);
+
             Stream streamResponse = _webResponse.GetResponseStream();
             StreamReader streamReader = new StreamReader(streamResponse);
             string Response = streamReader.ReadToEnd();
-
             DataContractJsonSerializer _dataContractJsonSerializer = new DataContractJsonSerializer(typeof(FsspResponseResult));
-            FsspResponseResult _result = (FsspResponseResult)_dataContractJsonSerializer.ReadObject(new MemoryStream(Encoding.Unicode.GetBytes(Response)));
+
+            FsspResponseResult _result = null;
+            do
+            {
+                try
+                {
+                    _result = (FsspResponseResult)_dataContractJsonSerializer.ReadObject(new MemoryStream(Encoding.Unicode.GetBytes(Response)));
+                }
+                catch(Exception e)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(e.Message);
+                    Console.ResetColor();
+                    Thread.Sleep(1000);
+                }
+            }
+            while (_result is null);
 
             return _result;
         }
@@ -229,17 +345,55 @@ namespace CheckFSSPRUS.Helpers.HelperWebRequest
         /// <returns></returns>
         public FsspResponseIP WebRequestIP(string _token, string _number)
         {
-            WebRequest _webRequest = (HttpWebRequest)WebRequest.Create("https://api-ip.fssprus.ru/api/v1.0/search/ip?token=" + _token + "&number=" + _number);
-            _webRequest.ContentType = "application/json";
-            _webRequest.Method = "GET";
+            WebResponse _webResponse = null;
+            do
+            {
+                WebRequest _webRequest = null;
+                try
+                {
+                    _webRequest = (HttpWebRequest)WebRequest.Create("https://api-ip.fssprus.ru/api/v1.0/search/ip?token=" + _token + "&number=" + _number);
+                    _webRequest.ContentType = "application/json";
+                    WebProxy _webProxy = new WebProxy();
+                    Uri newUri = new Uri("http://you_proxy:3128");
+                    _webProxy.Address = newUri;
+                    _webProxy.Credentials = CredentialCache.DefaultCredentials;
+                    _webRequest.Proxy = _webProxy;
+                    _webRequest.Method = "GET";
+                    _webResponse = _webRequest.GetResponse();
+                }
+                catch (WebException e)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(e.Message);
+                    Console.ResetColor();
+                    _webRequest.Abort();
+                    Thread.Sleep(1000);
+                }
+            }
+            while (_webResponse is null);
 
-            WebResponse _webResponse = _webRequest.GetResponse();
             Stream streamResponse = _webResponse.GetResponseStream();
             StreamReader streamReader = new StreamReader(streamResponse);
             string Response = streamReader.ReadToEnd();
 
             DataContractJsonSerializer _dataContractJsonSerializer = new DataContractJsonSerializer(typeof(FsspResponseIP));
-            FsspResponseIP _result = (FsspResponseIP)_dataContractJsonSerializer.ReadObject(new MemoryStream(Encoding.Unicode.GetBytes(Response)));
+
+            FsspResponseIP _result = null;
+            do
+            {
+                try
+                {
+                    _result = (FsspResponseIP)_dataContractJsonSerializer.ReadObject(new MemoryStream(Encoding.Unicode.GetBytes(Response)));
+                }
+                catch(Exception e)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(e.Message);
+                    Console.ResetColor();
+                    Thread.Sleep(1000);
+                }
+            }
+            while (_result is null);
 
             return _result;
         }
